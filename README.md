@@ -1,4 +1,6 @@
-# jbrowse-plugin-template
+![Integration](git@github.com:carolinebridge-oicr/jbrowse-plugin-overture/workflows/Integration/badge.svg?branch=main)
+
+# jbrowse-plugin-overture
 
 > Template to quickly start a new JBrowse plugin
 
