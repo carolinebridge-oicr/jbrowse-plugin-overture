@@ -1,35 +1,28 @@
 import Plugin from '@jbrowse/core/Plugin'
 import PluginManager from '@jbrowse/core/PluginManager'
-import ViewType from '@jbrowse/core/pluggableElementTypes/ViewType'
-import { AbstractSessionModel, isAbstractMenuManager } from '@jbrowse/core/util'
+import { AddTrackWorkflowType } from '@jbrowse/core/pluggableElementTypes'
+import { getSession, isSessionModelWithWidgets } from '@jbrowse/core/util'
+import { configure } from './AnalysisAdapter'
+
 import { version } from '../package.json'
 import {
-  ReactComponent as HelloViewReactComponent,
-  stateModel as helloViewStateModel,
-} from './HelloView'
+  ReactComponent as AnalysisReactComponent,
+  stateModel as analysisStateModel,
+} from './AnalysisAddTrackWidget'
 
 export default class OverturePlugin extends Plugin {
   name = 'OverturePlugin'
   version = version
 
   install(pluginManager: PluginManager) {
-    pluginManager.addViewType(() => {
-      return new ViewType({
-        name: 'HelloView',
-        stateModel: helloViewStateModel,
-        ReactComponent: HelloViewReactComponent,
+    pluginManager.addAddTrackWorkflowType(() => {
+      return new AddTrackWorkflowType({
+        name: 'Add Overture analysis tracks',
+        stateModel: analysisStateModel,
+        ReactComponent: AnalysisReactComponent,
       })
     })
   }
 
-  configure(pluginManager: PluginManager) {
-    if (isAbstractMenuManager(pluginManager.rootModel)) {
-      pluginManager.rootModel.appendToMenu('Add', {
-        label: 'Hello View',
-        onClick: (session: AbstractSessionModel) => {
-          session.addView('HelloView', {})
-        },
-      })
-    }
-  }
+  configure() {}
 }

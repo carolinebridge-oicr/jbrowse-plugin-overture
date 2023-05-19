@@ -4,9 +4,9 @@ import { types } from 'mobx-state-tree'
 const stateModel = types
   .model({
     id: ElementId,
-    type: types.literal('HelloView'),
+    type: types.literal('AnalysisAddTrackWidget'),
   })
-  .actions(() => ({
+  .actions((self) => ({
     // unused but required by your view
     setWidth() {},
   }))
