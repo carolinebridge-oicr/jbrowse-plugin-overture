@@ -1,4 +1,4 @@
-![Integration](git@github.com:carolinebridge-oicr/jbrowse-plugin-overture/workflows/Integration/badge.svg?branch=main)
+![Integration](git@github.com:carolinebridge-oicr/jbrowse-plugin-overture/workflows/integration.yml/badge.svg?branch=main)
 
 # jbrowse-plugin-overture
 
