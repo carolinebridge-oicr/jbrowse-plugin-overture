@@ -69,7 +69,7 @@ const AnalysisAddTrackWidget = observer(({ model }: { model: any }) => {
               })
             })
             session.notify(
-              'Your analyses have been added to tracks for the present view.',
+              'Your analyses have been added as tracks for the present view.',
               'success',
             )
             session.hideWidget(model)

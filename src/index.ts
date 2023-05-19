@@ -1,7 +1,6 @@
 import Plugin from '@jbrowse/core/Plugin'
 import PluginManager from '@jbrowse/core/PluginManager'
 import { AddTrackWorkflowType } from '@jbrowse/core/pluggableElementTypes'
-import { getSession, isSessionModelWithWidgets } from '@jbrowse/core/util'
 import { configure } from './AnalysisAdapter'
 
 import { version } from '../package.json'
@@ -24,5 +23,36 @@ export default class OverturePlugin extends Plugin {
     })
   }
 
-  configure() {}
+  configure(pluginManager: PluginManager) {
+    // adds analyses from the configuration on load of the session
+    const session = pluginManager.rootModel?.session
+    if (session) {
+      const plugin = pluginManager.runtimePluginDefinitions.find(
+        (plugin: any) => plugin.name === 'Overture',
+      )
+      // @ts-ignore
+      const analyses = plugin?.configurationSchema.analyses
+
+      analyses.forEach(async (analysis: any) => {
+        const configuredAnalysis = await configure(
+          analysis,
+          analysis.assemblyNames,
+          'onLoad',
+        )
+        Promise.all(configuredAnalysis).then((values) => {
+          values.forEach((conf: any) => {
+            if (conf) {
+              // @ts-ignore
+              session.addTrackConf(conf)
+            }
+          })
+        })
+      })
+
+      session.notify(
+        'Analyses from your configuration have been added as tracks.',
+        'success',
+      )
+    }
+  }
 }
