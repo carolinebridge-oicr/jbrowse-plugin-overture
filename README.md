@@ -1,5 +1,3 @@
-![Integration](https://github.com/carolinebridge-oicr/jbrowse-plugin-overture/workflows/integration.yml/badge.svg?branch=main)
-
 # jbrowse-plugin-overture
 
 > JBrowse 2 plugin for connection to Overture instance resources.
@@ -83,7 +81,7 @@ Once configured or installed via the UI:
 
 1. Navigate to the Add Track workflow and select the new option for Add Overture analysis tracks.
 
-2. Paste your analysis configuration (described above under ##config)
+2. Paste your analysis configuration (described above under [config](#Config))
 
 3. Submit, and the files associated with your analysis will be retrieved and displayed.
 
@@ -105,6 +103,6 @@ yarn start
 
 Then (assuming [JBrowse Web](https://github.com/GMOD/jbrowse-components/tree/main/products/jbrowse-web) is running on port 3000), open the following:
 
-[http://localhost:3000/?config=http://localhost:9000/jbrowse_config.json]
+[http://localhost:3000/?config=http://localhost:9000/jbrowse_config.json](http://localhost:3000/?config=http://localhost:9000/jbrowse_config.json)
 
 Need help getting JBrowse Web running? [Read the docs here](https://jbrowse.org/jb2/docs/quickstart_web/).
