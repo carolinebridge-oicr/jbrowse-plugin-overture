@@ -31,28 +31,31 @@ export default class OverturePlugin extends Plugin {
         (plugin: any) => plugin.name === 'Overture',
       )
       // @ts-ignore
-      const analyses = plugin?.configurationSchema.analyses
+      if (plugin?.configurationSchema && plugin?.configurationSchema.analyses) {
+        // @ts-ignore
+        const analyses = plugin?.configurationSchema.analyses
 
-      analyses.forEach(async (analysis: any) => {
-        const configuredAnalysis = await configure(
-          analysis,
-          analysis.assemblyNames,
-          'onLoad',
-        )
-        Promise.all(configuredAnalysis).then((values) => {
-          values.forEach((conf: any) => {
-            if (conf) {
-              // @ts-ignore
-              session.addTrackConf(conf)
-            }
+        analyses.forEach(async (analysis: any) => {
+          const configuredAnalysis = await configure(
+            analysis,
+            analysis.assemblyNames,
+            'onLoad',
+          )
+          Promise.all(configuredAnalysis).then((values) => {
+            values.forEach((conf: any) => {
+              if (conf) {
+                // @ts-ignore
+                session.addTrackConf(conf)
+              }
+            })
           })
         })
-      })
 
-      session.notify(
-        'Analyses from your configuration have been added as tracks.',
-        'success',
-      )
+        session.notify(
+          'Analyses from your configuration have been added as tracks.',
+          'success',
+        )
+      }
     }
   }
 }
