@@ -2,9 +2,7 @@
   "assemblies": [
     {
       "name": "volvox",
-      "aliases": [
-        "vvx"
-      ],
+      "aliases": ["vvx"],
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "trackId": "volvox_refseq",
@@ -22,18 +20,12 @@
             {
               "refName": "ctgA",
               "uniqueId": "alias1",
-              "aliases": [
-                "A",
-                "contigA"
-              ]
+              "aliases": ["A", "contigA"]
             },
             {
               "refName": "ctgB",
               "uniqueId": "alias2",
-              "aliases": [
-                "B",
-                "contigB"
-              ]
+              "aliases": ["B", "contigB"]
             }
           ]
         }
@@ -45,13 +37,5 @@
       "name": "Overture",
       "url": "http://localhost:9000/dist/jbrowse-plugin-overture.umd.development.js"
     }
-  ],
-  "defaultSession": {
-    "name": "New session",
-    "views": [
-      {
-        "type": "HelloView"
-      }
-    ]
-  }
+  ]
 }
