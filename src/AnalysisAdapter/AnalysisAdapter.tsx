@@ -15,11 +15,7 @@ export const configure = async (
   let configuredAnalysis = data.files.map(async (file: any) => {
     if (file.fileType === 'VCF' || file.fileType == 'BAM') {
       const trackTypeDetails = getTrackTypeDetails(file.fileType)
-      const index = findIndexFile(
-        file.fileName,
-        trackTypeDetails.indexSuffix,
-        data.files,
-      )
+      const index = findIndexFile(file.fileName, data.files)
       // index is undefined
       if (!index) {
         throw {
@@ -28,44 +24,48 @@ export const configure = async (
         }
       }
 
-      const urls = {
-        fileUrl: await fetchData(
-          analysis.scoreUrl,
-          analysis.authToken,
-          file.objectId,
-          file.fileSize,
-        ),
-        // @ts-ignore
-        indexUrl: await fetchData(
-          analysis.scoreUrl,
-          analysis.authToken,
+      if (index) {
+        const urls = {
+          fileUrl: await fetchData(
+            analysis.scoreUrl,
+            analysis.authToken,
+            file.objectId,
+            file.fileSize,
+          ),
           // @ts-ignore
-          index.objectId,
-          file.fileSize,
-        ),
-      }
+          indexUrl: await fetchData(
+            analysis.scoreUrl,
+            analysis.authToken,
+            // @ts-ignore
+            index.objectId,
+            // @ts-ignore
+            index.fileSize,
+          ),
+        }
 
-      return {
-        type: trackTypeDetails.trackType,
-        trackId: generateTrackId(file.fileName, onLoad),
-        name: file.fileName,
-        assemblyNames: assemblyNames,
-        category: ['Overture'],
-        adapter: {
-          type: trackTypeDetails.adapterType,
-          [trackTypeDetails.locationType]: {
-            uri: `http://localhost:7070/proxy/${urls.fileUrl.substring(56)}`,
-            locationType: 'UriLocation',
-          },
-          index: {
-            location: {
-              uri: `http://localhost:7070/proxy/${urls.indexUrl.substring(56)}`,
+        return {
+          type: trackTypeDetails.trackType,
+          trackId: generateTrackId(file.fileName, onLoad),
+          name: file.fileName,
+          assemblyNames: assemblyNames,
+          category: ['Overture'],
+          adapter: {
+            type: trackTypeDetails.adapterType,
+            [trackTypeDetails.locationType]: {
+              uri: urls.fileUrl,
               locationType: 'UriLocation',
             },
+            index: {
+              location: {
+                uri: urls.indexUrl,
+                locationType: 'UriLocation',
+              },
+            },
           },
-        },
+        }
       }
     }
+
     return
   })
 
@@ -108,7 +108,7 @@ async function fetchData(
   objectId: string,
   fileSize: string,
 ) {
-  const dataPath = `${scoreUrl}/download/${objectId}?offset=0&length=${fileSize}&external=false&exclude-urls=false`
+  const dataPath = `${scoreUrl}/download/${objectId}?offset=0&length=${fileSize}&external=true&exclude-urls=false`
 
   const response = await fetch(dataPath, {
     headers: {
@@ -136,13 +136,11 @@ function getTrackTypeDetails(fileType: string) {
       trackType: 'AlignmentsTrack',
       adapterType: 'BamAdapter',
       locationType: 'bamLocation',
-      indexSuffix: 'bai',
     },
     VCF: {
       trackType: 'VariantTrack',
       adapterType: 'VcfTabixAdapter',
       locationType: 'vcfGzLocation',
-      indexSuffix: 'idx',
     },
   }
   //@ts-ignore
@@ -169,8 +167,11 @@ function generateTrackId(name: string, onLoad?: string) {
  * @param fileArray the array of files from the analysis
  * @returns a file that includes the file's name plus its index file suffix
  */
-function findIndexFile(fileName: string, suffix: string, fileArray: []) {
+function findIndexFile(fileName: string, fileArray: []) {
   return fileArray.find(
-    (file: any) => file.fileName === `${fileName}.${suffix}`,
+    (file: any) =>
+      file.fileName === `${fileName}.bai` ||
+      file.fileName === `${fileName}.idx` ||
+      file.fileName === `${fileName}.tbi`,
   )
 }
